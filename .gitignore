@@ -1,0 +1,15 @@
+# Temporales de revisión visual y caches
+tmp/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Dependencias locales
+node_modules/
+.venv/
+venv/
+
+# Caches de herramientas
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
