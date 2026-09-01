@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ciclo Brayton — Taller de Energía II</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=IBM+Plex+Mono:wght@400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="stage">
+    <div class="deck">
+      <span class="corner tl"></span><span class="corner tr"></span>
+      <span class="corner bl"></span><span class="corner br"></span>
+      <div class="hint">← → &nbsp; N notas &nbsp; T tiempo &nbsp; ? ayuda</div>
+
+      <!-- 1 -->
+      <section class="slide slide-title active" data-title="El ciclo de las turbinas de gas" data-notes="Buenos días. En los próximos diez minutos voy a presentar el ciclo Brayton, que es el modelo termodinámico de las turbinas de gas. Cada vez que convertimos calor en trabajo usando un gas como fluido de trabajo —en una central eléctrica, en un avión o en una planta de ciclo combinado— estamos, en esencia, recorriendo este ciclo. La pregunta que quiero responder es sencilla: ¿cómo se obtiene trabajo neto comprimiendo y expandiendo un gas, sin evaporar ni condensar nada?">
+        <div class="bg"></div>
+        <div class="content">
+          <img class="emblem" src="assets/emblema.jpg" alt="Emblema geométrico" />
+          <p class="kicker">Taller de Energía II &nbsp;·&nbsp; Disertación</p>
+          <h1 class="display">Ciclo Brayton</h1>
+          <p class="lede" style="margin-top:28px;color:#D7E0EC">El modelo termodinámico de la turbina de gas.<br />Calor → trabajo, sin cambio de fase.</p>
+          <div class="meta-row">
+            <span>Andres Barbudo</span>
+            <span>George Brayton, 1870s</span>
+            <span>Aviación + electricidad</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2 -->
+      <section class="slide" data-title="Cuatro procesos, cuatro componentes" data-notes="El ciclo ideal de Brayton tiene cuatro procesos y cuatro componentes, y conviene seguirlos en el mismo orden en que circula el aire. Primero, el aire entra al compresor y se comprime de forma isentrópica. Después se añade calor a presión constante. Luego los gases se expanden isentrópicamente en la turbina. Una parte de ese trabajo mueve el compresor; lo que sobra es el trabajo neto. El fluido permanece siempre en fase gaseosa.">
+        <p class="kicker">Diapositiva 02 &nbsp;·&nbsp; Funcionamiento</p>
+        <h2>Cuatro procesos, siempre en gas.</h2>
+        <div class="grid-2 wide-left">
+          <div>
+            <table class="process-table">
+              <thead>
+                <tr><th>Proceso</th><th>Qué ocurre</th><th>Componente</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="step">1 → 2</td><td>Compresión <em>isentrópica</em></td><td>Compresor</td></tr>
+                <tr><td class="step">2 → 3</td><td>Calor <em>isobárico</em></td><td>Cámara de combustión</td></tr>
+                <tr><td class="step">3 → 4</td><td>Expansión <em>isentrópica</em></td><td>Turbina</td></tr>
+                <tr><td class="step">4 → 1</td><td>Rechazo <em>isobárico</em></td><td>Escape o intercambiador</td></tr>
+              </tbody>
+            </table>
+            <ul class="bullets">
+              <li>La turbina mueve el <em>compresor</em>; el resto es <em>Ẇneto</em>.</li>
+              <li>No hay bomba ni condensador: no hay cambio de fase.</li>
+            </ul>
+            <p class="caption" style="margin-top:22px">
+              Configuración
+              <select id="cycle-mode" style="margin-left:12px;background:#303030;color:#D7E0EC;border:1px solid rgba(204,178,68,0.35);padding:6px 10px;font:inherit">
+                <option value="abierto">ciclo abierto</option>
+                <option value="cerrado">ciclo cerrado</option>
+              </select>
+            </p>
+          </div>
+          <div class="chart-frame">
+            <div class="chart-label">Esquema de componentes</div>
+            <div id="chart-plant"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3 -->
+      <section class="slide" data-title="Diagramas T-s y P-v" data-notes="Si miramos el diagrama T-s, el ciclo queda muy claro. La compresión 1-2 es una línea vertical. La adición de calor 2-3 recorre la isóbara de alta presión. La expansión 3-4 baja en entropía constante. El rechazo 4-1 cierra por la isóbara de baja. El área encerrada es el trabajo neto. Comparado con Carnot, Brayton no es un rectángulo en T-s: las isóbaras tienen pendiente, y por eso rinde menos entre las mismas temperaturas extremas.">
+        <p class="kicker">Diapositiva 03 &nbsp;·&nbsp; Representación</p>
+        <h2>En T–s no es un rectángulo.</h2>
+        <div class="grid-2 equal" style="height:calc(100% - 160px)">
+          <div>
+            <div class="chart-frame" style="height:78%">
+              <div class="chart-label">Diagrama T–s &nbsp;·&nbsp; aire estándar</div>
+              <div id="chart-ts"></div>
+            </div>
+            <p class="caption">Isentrópicas verticales + isóbaras curvas. El área es proporcional a Ẇneto.</p>
+          </div>
+          <div>
+            <div class="chart-frame" style="height:78%">
+              <div class="chart-label">Diagrama P–v</div>
+              <div id="chart-pv"></div>
+            </div>
+            <p class="caption">η_Brayton &lt; η_Carnot entre las mismas T extremas: el calor entra y sale a T variable.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4 -->
+      <section class="slide" data-title="Ecuaciones del ciclo ideal" data-notes="Bajo el supuesto de aire estándar —gas ideal y calor específico constante— el análisis se vuelve muy limpio. El rendimiento térmico ideal queda: uno menos uno sobre r p a la gama menos uno sobre gama. Depende solo de la relación de presiones y de gama. En la máquina real, T tres, la temperatura de entrada a la turbina, es el verdadero límite tecnológico.">
+        <p class="kicker">Diapositiva 04 &nbsp;·&nbsp; Análisis energético</p>
+        <h2>Una expresión, dos límites.</h2>
+        <div class="grid-2">
+          <div class="eq-stack">
+            <div class="eq-card">
+              <div class="eq-kicker">Relación de presiones</div>
+              <p>\[ r_p = P_2 / P_1 = P_3 / P_4 \]</p>
+            </div>
+            <div class="eq-card">
+              <div class="eq-kicker">Isentrópicos &nbsp;·&nbsp; γ ≈ 1,4</div>
+              <p>\[ T_2 / T_1 = T_3 / T_4 = r_p^{(\gamma-1)/\gamma} \]</p>
+            </div>
+            <div class="eq-card">
+              <div class="eq-kicker">Balances por kilogramo</div>
+              <p>\[ q_{in}=c_p(T_3-T_2) \quad w_{neto}=c_p[(T_3-T_4)-(T_2-T_1)] \]</p>
+            </div>
+            <div class="eq-card hero">
+              <div class="eq-kicker">Rendimiento del Brayton ideal simple</div>
+              <p>\[ \eta_{th} = 1 - \frac{1}{r_p^{(\gamma-1)/\gamma}} \]</p>
+            </div>
+            <p class="note-chip">El η ideal no muestra T de forma explícita. En la práctica, el techo lo pone <em>T₃</em> (TIT).</p>
+          </div>
+          <div class="chart-frame">
+            <div class="chart-label">T–s con rₚ = 12</div>
+            <div id="chart-ts-mini"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5 -->
+      <section class="slide" data-title="Relación de presiones y trabajo neto" data-notes="Si aumento r p, el rendimiento del ciclo ideal sube. Pero el trabajo neto por kilogramo no crece siempre: existe un r p óptimo que maximiza el trabajo específico. Si comprimo demasiado, T dos se acerca a T tres y entra poco calor. El compresor se come entre un cuarenta y un ochenta por ciento del trabajo de la turbina. Comprimir un gas es caro; esa es la huella energética del Brayton.">
+        <p class="kicker">Diapositiva 05 &nbsp;·&nbsp; Explorador</p>
+        <h2>Subir la relación de presiones no siempre da más trabajo.</h2>
+        <div class="explorer">
+          <div>
+            <div class="slider-wrap">
+              <label>Relación de presiones <span id="rp-value">12.0</span></label>
+              <input id="rp" type="range" min="2" max="30" step="0.1" value="12" />
+            </div>
+            <div class="stats">
+              <div class="stat"><div class="n" id="stat-eta">—</div><div class="l">ηth ideal</div></div>
+              <div class="stat"><div class="n" id="stat-w">—</div><div class="l">w neto</div></div>
+              <div class="stat"><div class="n" id="stat-t2">—</div><div class="l">T₂ salida compresor</div></div>
+              <div class="stat"><div class="n" id="stat-t4">—</div><div class="l">T₄ escape turbina</div></div>
+              <div class="stat span"><div class="n" id="stat-rbw">—</div><div class="l">trabajo inverso r<sub>bw</sub> &nbsp;·&nbsp; Rankine ≈ 1–3 %</div></div>
+            </div>
+            <p class="note-chip" id="regen-chip"></p>
+            <p class="caption" style="margin-top:18px">T₁ = 300 K &nbsp;·&nbsp; T₃ = 1400 K &nbsp;·&nbsp; γ = 1,4 &nbsp;·&nbsp; aire estándar frío. Mueve el control: las curvas son el modelo, no un dibujo.</p>
+          </div>
+          <div class="chart-frame">
+            <div class="chart-label">ηth crece &nbsp;·&nbsp; wneto tiene máximo</div>
+            <div id="chart-curves"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6 -->
+      <section class="slide" data-title="Ciclo real y regeneración" data-notes="El ciclo real se aleja del ideal: el compresor y la turbina no son isentrópicos, hay caídas de presión y calor perdido. La regeneración recupera el calor del escape para precalentar el aire que sale del compresor. Ayuda más cuando r p es moderada. Si r p es muy alta, T dos ya sale caliente y T cuatro más fría, y casi no queda calor recuperable.">
+        <p class="kicker">Diapositiva 06 &nbsp;·&nbsp; Del ideal al real</p>
+        <h2>Regenerar no es siempre mejor.</h2>
+        <div class="grid-2 equal" style="height:calc(100% - 150px)">
+          <div>
+            <div class="chart-frame" style="height:58%">
+              <div class="chart-label">T–s real superpuesto al ideal</div>
+              <div id="chart-ts-real"></div>
+            </div>
+            <ul class="bullets" style="margin-top:18px;font-size:18px">
+              <li>η<sub>s,c</sub> y η<sub>s,t</sub> &lt; 1 &nbsp;→&nbsp; más w_comp, menos w_turb.</li>
+              <li>Caídas de presión en cámara y conductos.</li>
+              <li>Mejoras: regeneración, interenfriamiento, recalentamiento.</li>
+            </ul>
+          </div>
+          <div>
+            <div class="chart-frame" style="height:58%">
+              <div class="chart-label">Regenerador &nbsp;·&nbsp; ε = (T₅ − T₂)/(T₄ − T₂)</div>
+              <div id="chart-regen"></div>
+            </div>
+            <p class="caption">Con ε = 1: \(\eta_{reg}=1-(T_1/T_3)\,r_p^{(\gamma-1)/\gamma}\). Subir rₚ reduce el salto T₄ − T₂.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7 -->
+      <section class="slide" data-title="Aplicaciones y ciclo combinado" data-notes="Hoy el ciclo Brayton vive en dos mundos. En aviación es la base del turbofan: el producto útil es empuje. En tierra, el uso más eficiente es el ciclo combinado: los gases de escape producen vapor y alimentan un Rankine. Las mejores plantas superan el sesenta por ciento. Brayton y Rankine no son rivales: se complementan.">
+        <p class="kicker">Diapositiva 07 &nbsp;·&nbsp; Aplicaciones</p>
+        <h2>No va solo. Va combinado.</h2>
+        <div class="grid-3" style="margin-bottom:22px">
+          <article class="app-card">
+            <div class="app-num">01</div>
+            <h3>Aviación</h3>
+            <p class="muted">Turborreactor y, sobre todo, turbofan. El trabajo útil es empuje: variación de cantidad de movimiento.</p>
+          </article>
+          <article class="app-card">
+            <div class="app-num">02</div>
+            <h3>Ciclo simple</h3>
+            <p class="muted">Arranque en minutos. Punta de demanda y respaldo de renovables. Sin agua de refrigeración.</p>
+          </article>
+          <article class="app-card">
+            <div class="app-num">03</div>
+            <h3>Ciclo combinado</h3>
+            <p class="muted">Brayton arriba, Rankine abajo. Plantas modernas: η &gt; 60 % (PCI). La aplicación terrestre más importante.</p>
+          </article>
+        </div>
+        <div class="chart-frame" style="height:42%">
+          <div id="chart-combined"></div>
+        </div>
+      </section>
+
+      <!-- 8 -->
+      <section class="slide" data-title="Cierre" data-notes="Cierro con tres ideas. Primera: el Brayton es el ciclo de las turbinas de gas; dos isóbaras y dos isentrópicas. Segunda: el rendimiento ideal crece con r p, pero el trabajo neto tiene un óptimo. Tercera: su versión más eficiente no va sola, va combinada con vapor. Gracias. Quedo atento a sus preguntas.">
+        <p class="kicker">Diapositiva 08 &nbsp;·&nbsp; Cierre</p>
+        <h2>Tres ideas para llevarse.</h2>
+        <ol class="close-list">
+          <li><span class="idx">01</span><span>Brayton = turbina de gas: solo fase gaseosa, dos isóbaras y dos isentrópicas.</span></li>
+          <li><span class="idx">02</span><span>η ideal crece con rₚ; el trabajo neto tiene un óptimo; T₃ limita la máquina real.</span></li>
+          <li><span class="idx">03</span><span>Su versión más eficiente no va sola: va en ciclo combinado con Rankine.</span></li>
+        </ol>
+        <p class="final-line">El Brayton convierte calor en trabajo empujando un gas a lo largo de dos isóbaras. Su futuro más eficiente va combinado con vapor.</p>
+        <div class="strip" aria-hidden="true"></div>
+      </section>
+
+      <!-- 9 Q&A -->
+      <section class="slide" data-title="Preguntas frecuentes" data-notes="Esta lámina es de apoyo. No forma parte de los diez minutos. Abre la tarjeta si te hacen la pregunta.">
+        <p class="kicker">Después de los 10 minutos</p>
+        <h2>Si preguntan.</h2>
+        <div class="qa-grid">
+          <article class="qa">
+            <h3>¿Brayton frente a Rankine?</h3>
+            <p>Brayton trabaja siempre con gas y usa un compresor caro (r_bw 40–80 %). Rankine evapora y condensa, y la bomba consume 1–3 %. No son rivales: el combinado usa a Brayton en alta T y a Rankine en el calor residual.</p>
+          </article>
+          <article class="qa">
+            <h3>¿Más rₚ es más rendimiento?</h3>
+            <p>En el ciclo simple ideal, sí: η = 1 − 1/rₚ^{(γ−1)/γ}. El trabajo neto, no: hay un rₚ que maximiza wneto cuando T₂ = T₄ = √(T₁ T₃). Con regeneración, subir rₚ puede bajar η.</p>
+          </article>
+          <article class="qa">
+            <h3>¿Por qué regenerar?</h3>
+            <p>Si T₄ &gt; T₂, el escape todavía puede precalentar el aire comprimido y se quema menos combustible. Sirve sobre todo a rₚ moderada. A rₚ alta, T₂ ≈ T₄ y no queda salto térmico.</p>
+          </article>
+          <article class="qa">
+            <h3>¿Abierto o cerrado?</h3>
+            <p>Abierto: aire de la atmósfera, combustión interna, escape. Es el de aviones y casi todas las turbinas de gas. Cerrado: el gas recircula y el calor entra por un intercambiador (nuclear, solar).</p>
+          </article>
+          <article class="qa">
+            <h3>¿Qué irreversibilidades importan?</h3>
+            <p>Compresor y turbina no isentrópicos, caídas de presión, pérdidas de calor y mecánicas. Como r_bw ya es alto, Brayton es muy sensible a ηs del compresor y de la turbina.</p>
+          </article>
+          <article class="qa">
+            <h3>¿Dónde se usa hoy?</h3>
+            <p>Turbofan, generación en ciclo simple (punta) y, sobre todo, ciclo combinado con gas natural (η &gt; 60 %). También microturbinas, gasoductos y Brayton cerrado en desarrollo.</p>
+          </article>
+          <article class="qa">
+            <h3>¿Ventajas y límites?</h3>
+            <p>Ventaja: alta potencia específica, arranque rápido, T máxima alta. Límite: comprimir gas es caro, techo de paletas, NOₓ, y el ciclo simple desperdicia un escape todavía caliente.</p>
+          </article>
+          <article class="qa">
+            <h3>¿rₚ o rᵥ?</h3>
+            <p>En Brayton se diseña con relación de presiones rₚ = P₂/P₁. En Otto y Diesel se habla de relación volumétrica rᵥ. Para un isentrópico de gas ideal, rₚ = rᵥ^γ, pero no son el mismo parámetro.</p>
+          </article>
+        </div>
+      </section>
+
+      <footer class="chrome">
+        <div id="counter">01  /  09</div>
+        <div class="dots" id="dots"></div>
+        <div class="timer" id="timer" title="T para iniciar o pausar">00:00</div>
+      </footer>
+
+      <aside class="drawer" id="notes">
+        <h4>Texto oral</h4>
+        <p id="notes-body"></p>
+      </aside>
+      <aside class="help" id="help">
+        <h3>Controles</h3>
+        <dl>
+          <dt>← →</dt><dd>Diapositiva anterior / siguiente</dt>
+          <dt>T</dt><dd>Inicia o pausa el cronómetro de 10 min</dt>
+          <dt>N</dt><dd>Notas del discurso oral</dt>
+          <dt>O</dt><dd>Vista de todas las láminas</dt>
+          <dt>F</dt><dd>Pantalla completa</dt>
+          <dt>?</dt><dd>Esta ayuda</dt>
+        </dl>
+        <p class="caption" style="margin-top:18px;cursor:pointer" id="help-close">cerrar</p>
+      </aside>
+      <aside class="overview" id="overview"></aside>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script src="js/thermo.js"></script>
+  <script src="js/diagrams.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

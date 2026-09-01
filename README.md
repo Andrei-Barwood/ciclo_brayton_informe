@@ -1,48 +1,40 @@
-# Informe académico: Ciclo Brayton
+# Ciclo Brayton — presentación
 
-Este proyecto genera un informe A4 en PDF para la asignatura **Taller de Energía**. El contenido se conserva en Markdown y el diseño se construye con Python para que sea reproducible.
+Sitio de disertación para **Taller de Energía II**. Las curvas T–s, P–v y η(rₚ) se calculan en el navegador con el modelo de aire estándar frío; no son imágenes fijas.
 
-## Organización
+## Cómo abrir
 
-- `informe/Informe_Ciclo_Brayton_fuente.md`: texto editable del informe.
-- `informe/Informe_Ciclo_Brayton_7_paginas_fuente.md`: versión sintetizada editable.
-- `scripts/generate_report.py`: configuración de portada, creación de figuras, verificación de cálculos y generación del PDF.
-- `scripts/generate_report_7_pages.py`: genera la copia sintetizada de exactamente siete páginas.
-- `figures/`: diagramas originales generados por el script.
-- `sources/fuentes_verificadas.md`: registro breve de las fuentes consultadas y controles realizados.
-- `output/Informe_Ciclo_Brayton.pdf`: entrega principal.
-- `output/Informe_Ciclo_Brayton_7_paginas.pdf`: copia sintetizada de siete páginas.
-- `tmp/`: archivos temporales utilizados en la revisión visual.
-
-## Datos de portada
-
-Edite al comienzo de `scripts/generate_report.py` las variables:
-
-```python
-STUDENT_NAME = "[COMPLETAR NOMBRE DEL ESTUDIANTE]"
-TEACHER_NAME = "[COMPLETAR NOMBRE DEL DOCENTE]"
-COURSE = "Taller de Energía"
-CAREER = "[COMPLETAR NOMBRE OFICIAL DE LA CARRERA]"
-INSTITUTION = "[COMPLETAR INSTITUCIÓN]"
-DELIVERY_DATE = "[COMPLETAR FECHA]"
-```
-
-## Cómo regenerar el PDF
-
-Desde la carpeta `ciclo_brayton_informe` ejecute:
+Desde esta carpeta:
 
 ```bash
-python3 scripts/generate_report.py
+python3 -m http.server 8765
 ```
 
-Dependencias: Python 3, ReportLab, Matplotlib, NumPy y Pillow. El script utiliza los archivos Arial incluidos en macOS en `/System/Library/Fonts/Supplemental/`. Si se ejecuta en otro sistema operativo, se deben ajustar las cuatro rutas de fuente declaradas en el script.
+Luego abre [http://127.0.0.1:8765](http://127.0.0.1:8765).
 
-El generador comprueba automáticamente el ejemplo numérico antes de escribir el PDF y vuelve a crear las figuras en alta resolución en cada ejecución.
+También se puede abrir `index.html` directo, pero KaTeX y las fuentes piden red.
 
-Para regenerar solamente la copia de siete páginas, ejecute:
+## Controles
 
-```bash
-python3 scripts/generate_report_7_pages.py
-```
+| Tecla | Acción |
+|---|---|
+| ← → o espacio | Cambiar diapositiva |
+| T | Cronómetro de 10 minutos |
+| N | Texto oral de la lámina |
+| O | Vista general |
+| F | Pantalla completa |
+| ? | Ayuda |
 
-La versión breve reutiliza las mismas variables de portada declaradas en `scripts/generate_report.py`, por lo que un solo cambio actualiza ambas versiones.
+En la diapositiva 05, mueve **rₚ** y las curvas se recalculan: ηth, wneto, T₂, T₄ y la relación de trabajo inverso.
+
+## Contenido
+
+1. Título  
+2. Cuatro procesos (abierto / cerrado)  
+3. T–s y P–v  
+4. Ecuaciones del ciclo ideal  
+5. Explorador de rₚ  
+6. Ciclo real y regeneración  
+7. Aplicaciones y ciclo combinado  
+8. Cierre  
+9. Preguntas (después de los 10 minutos)
